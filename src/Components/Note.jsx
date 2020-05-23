@@ -1,0 +1,84 @@
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import * as noteServices from "../Services/noteServices";
+import queryString from "query-string";
+import { useEffect } from "react";
+
+const Note = ({ props, history, match, location }) => {
+  const { notebookId } = queryString.parse(location.search);
+
+  const dispatch = useDispatch();
+  const editable = true;
+  const [currentNote, changeNote] = useState(
+    useSelector((store) => store.notesReducer).filter(
+      (note) => note._id == match.params.id
+    )[0] || { body: "", title: "", notebook: "" }
+  );
+
+  const changeInput = (e) => {
+    changeNote({ ...currentNote, [e.target.name]: e.target.value });
+  };
+
+  const saveNote = (id) => {
+    if (match.params.id !== "new" && editable) {
+      dispatch({ type: "removeNote", payload: id });
+      noteServices.updateNote(currentNote);
+      history.push("/notes/" + currentNote.notebook);
+    }
+    if (match.params.id === "new") {
+      noteServices.addNote(notebookId, currentNote);
+      history.push("/notes/" + notebookId);
+    }
+  };
+
+  return (
+    <div
+      className="container"
+      style={{
+        position: "relative",
+        top: "50px",
+        left: "0px",
+        color: "black !important",
+      }}
+    >
+      <div className="card">
+        <div className="card-header" style={{ color: "black" }}>
+          {editable ? (
+            <textarea
+              type="text"
+              value={currentNote.title}
+              onChange={changeInput}
+              name="title"
+              style={{ height: "100%", width: "100%" }}
+            ></textarea>
+          ) : (
+            currentNote.title
+          )}
+        </div>
+        <div className="card-body" style={{ color: "black" }}>
+          {editable ? (
+            <div>
+              <textarea
+                type="text"
+                value={currentNote.body}
+                style={{ height: "100%", width: "100%" }}
+                onChange={changeInput}
+                name="body"
+              ></textarea>
+              <button
+                onClick={() => saveNote(currentNote._id)}
+                className="btn btn-primary"
+              >
+                Save Note
+              </button>
+            </div>
+          ) : (
+            <p>{currentNote.body}</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Note;

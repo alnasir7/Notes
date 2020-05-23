@@ -4,7 +4,7 @@ import Joi from "joi-browser";
 import * as userService from "../Services/userServices";
 
 const Login = () => {
-  const [loginMode, changeMode] = useState(false);
+  const [loginMode, changeMode] = useState("login");
   const [user, changeUser] = useState({
     username: "",
     password: "",
@@ -25,20 +25,34 @@ const Login = () => {
 
   const submitUser = (event) => {
     event.preventDefault();
-    const submitUser = {
-      username: user.username,
-      password: user.password,
-      role: user.role,
-    };
-    try {
-      userService.loginUser(submitUser);
-    } catch (error) {}
+    if (loginMode === "register") {
+      const submitUser = {
+        username: user.username,
+        password: user.password,
+        role: user.role,
+      };
+      try {
+        userService.registerUser(submitUser);
+        userService.loginUser(submitUser);
+        window.location = "/";
+      } catch (error) {}
+    } else {
+      const submitUser = {
+        username: user.username,
+        password: user.password,
+        role: user.role,
+      };
+      try {
+        userService.loginUser(submitUser);
+        window.location = "/";
+      } catch (error) {}
+    }
   };
 
   return (
     <React.Fragment>
       <div style={{ position: "relative", top: 30, left: 40 }}>
-        <h1>Login Page</h1>
+        {loginMode === "login" ? <h1>Login</h1> : <h1>Register</h1>}
       </div>
       <div
         className="m-2"
@@ -76,22 +90,46 @@ const Login = () => {
               onChange={changeInput}
             ></input>
           </div>
-          <div className="form-group mt-2">
-            <label htmlFor="role">Choose Role</label>
-            <select
-              className="role ml-3"
-              id="role"
-              name="role"
-              onChange={changeInput}
-            >
-              <option value="admin">Admin</option>
-              <option value="user">User</option>
-            </select>
-          </div>
+          {loginMode === "register" ? (
+            <div className="form-group mt-2">
+              <label htmlFor="role">Choose Role</label>
+              <select
+                className="role ml-3"
+                id="role"
+                name="role"
+                onChange={changeInput}
+              >
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+              </select>
+            </div>
+          ) : null}
           <button className="btn btn-primary" type="submit">
             Submit
           </button>
         </form>
+      </div>
+      <div className="m-4" style={{ position: "relative", top: 170, left: 20 }}>
+        <h3>
+          <a>
+            {" "}
+            {loginMode === "register" ? (
+              <span
+                style={{ cursor: "pointer" }}
+                onClick={() => changeMode("login")}
+              >
+                Already have an account? Login here
+              </span>
+            ) : (
+              <span
+                style={{ cursor: "pointer" }}
+                onClick={() => changeMode("register")}
+              >
+                Don't have an account yet? sign up here
+              </span>
+            )}
+          </a>
+        </h3>
       </div>
     </React.Fragment>
   );

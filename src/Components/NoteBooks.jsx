@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import icon from "../misc/icon.png";
 import { useSelector, useDispatch } from "react-redux";
+import * as notebookServices from "../Services/notebookServices";
 import Collapse from "react-bootstrap/Collapse";
 import { Link } from "react-router-dom";
 
@@ -10,13 +11,29 @@ const NoteBooks = ({ history }) => {
   const [open, changeOpen] = useState(false);
   const dispatch = useDispatch();
 
-  const addNotebook = () => {
-    dispatch({
-      type: "addNotebook",
-      payload: { id: notebooks.length + 2, name: newNotebook },
-    });
+  useEffect(() => {
+    async function body() {
+      const { data: array } = await notebookServices.getNotebooks();
+
+      try {
+        dispatch({ type: "emptyNotebooks" });
+        array.forEach((notebook) => {
+          dispatch({ type: "addNotebook", payload: notebook });
+        });
+      } catch (error) {}
+    }
+    body();
+  }, []);
+
+  const addNotebook = async () => {
+    const { data: result } = await notebookServices.addNotebook(newNotebook);
+    console.log(result);
     changeNotebook("");
     changeOpen(false);
+    dispatch({
+      type: "addNotebook",
+      payload: result,
+    });
   };
   const changeInput = (e) => {
     changeNotebook(e.target.value);
@@ -24,6 +41,7 @@ const NoteBooks = ({ history }) => {
 
   const removeNotebook = (id) => {
     dispatch({ type: "removeNotebook", payload: id });
+    notebookServices.removeNotebook(id);
   };
 
   return (
@@ -69,27 +87,41 @@ const NoteBooks = ({ history }) => {
 
       <div className="container" style={{ margin: "10px" }}>
         <div className="row">
-          {notebooks.map((notebook, id) => (
-            <div key={id} className="col col-6" style={{ padding: "10px" }}>
-              <Link to={`notes/${id}`}>
-                <img
-                  style={{ cursor: "pointer" }}
-                  src={icon}
-                  width="75"
-                  height="75"
-                  className="d-inline-block align-top"
-                  alt=""
-                  loading="lazy"
-                />
-              </Link>
-
-              <div>
-                {notebook.name}{" "}
-                <i
-                  onClick={() => removeNotebook(id + 1)}
-                  className="fas fa-trash ml-3"
-                  style={{ cursor: "pointer" }}
-                ></i>
+          {notebooks.map((notebook) => (
+            <div
+              key={notebook._id}
+              className="col col-6"
+              style={{ padding: "10px" }}
+            >
+              <div className="container">
+                <div className="row">
+                  <div className="col col-4">
+                    <Link
+                      to={`notes/${notebook._id}`}
+                      style={{ height: "0px" }}
+                    >
+                      <img
+                        style={{ cursor: "pointer", border: "0px" }}
+                        src={icon}
+                        width="75"
+                        height="75"
+                        className="d-inline-block align-top"
+                        alt=""
+                        loading="lazy"
+                      />
+                    </Link>
+                  </div>
+                  <div className="col col-8 mt-2">
+                    <div className="row">{notebook.name} </div>
+                    <div className="row mt-1">
+                      <i
+                        onClick={() => removeNotebook(notebook._id)}
+                        className="fas fa-trash ml-3"
+                        style={{ cursor: "pointer" }}
+                      ></i>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           ))}

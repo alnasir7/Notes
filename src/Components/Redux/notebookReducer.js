@@ -1,19 +1,15 @@
-import { addNotebook, removeNotebook } from "./Actions";
+import { addNotebook, removeNotebook, emptyNotebooks } from "./Actions";
 
-const initialState = [
-  { id: 1, name: "Mohammed" },
-  { id: 2, name: "Ussaid" },
-  { id: 3, name: "Sami" },
-  { id: 4, name: "Karam" },
-  { id: 5, name: "Zurain" },
-];
+const initialState = [];
 
 export default function (state = initialState, { type, payload }) {
   switch (type) {
     case addNotebook:
       return [...state, payload];
     case removeNotebook:
-      return state.filter((element) => element.id !== payload);
+      return state.filter((element) => element._id !== payload);
+    case emptyNotebooks:
+      return [];
     default:
       return state;
   }
