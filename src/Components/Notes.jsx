@@ -15,6 +15,9 @@ const Notes = ({ history, match }) => {
   const notes = useSelector((store) => store.notesReducer);
 
   useEffect(() => {
+    if (!notebook) {
+      history.push("/notFound");
+    }
     async function body() {
       try {
         dispatch({ type: "emptyNotes" });
@@ -23,14 +26,17 @@ const Notes = ({ history, match }) => {
           dispatch({ type: "addNote", payload: element });
         });
       } catch (error) {
-        console.log(error);
+        history.push("/networkDown");
       }
       try {
+        dispatch({ type: "emptyNotebooks" });
         const { data: array } = await notebookServices.getNotebooks();
         array.forEach((notebook) => {
           dispatch({ type: "addNotebook", payload: notebook });
         });
-      } catch (error) {}
+      } catch (error) {
+        history.push("/networkDown");
+      }
     }
     body();
   }, []);
@@ -65,11 +71,13 @@ const Notes = ({ history, match }) => {
           <div
             className="container"
             style={{
-              overflow: "scrollable",
+              overflowY: "scrollable",
               position: "relative",
+              bottom: 20,
               top: 80,
               left: 0,
               width: "100%",
+              height: "70%",
               marginLeft: "25px",
               marginRight: "25px",
             }}
@@ -80,7 +88,7 @@ const Notes = ({ history, match }) => {
               }}
             />
             {notes.map((note) => (
-              <div>
+              <div style={{ overflowY: "scrollable" }}>
                 <div className="container">
                   <div className="row">
                     <div className="col col-2">
@@ -126,7 +134,7 @@ const Notes = ({ history, match }) => {
                             color: "rgba(141, 145, 136, 0.74)",
                           }}
                         >
-                          {note.body.slice(0, 200)} . . .{" "}
+                          {note.body.slice(0, 125)} . . .{" "}
                         </p>
                       </div>
                     </div>
@@ -166,9 +174,7 @@ const Notes = ({ history, match }) => {
         </div>
       )}
 
-      <div
-        style={{ marginTop: "300px", marginLeft: "25px", position: "relative" }}
-      >
+      <div style={{ position: "absolute", top: 75, right: 5 }}>
         <button
           onClick={() => {
             history.replace("/");

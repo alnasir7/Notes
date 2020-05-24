@@ -13,14 +13,15 @@ const NoteBooks = ({ history }) => {
 
   useEffect(() => {
     async function body() {
-      const { data: array } = await notebookServices.getNotebooks();
-
       try {
+        const { data: array } = await notebookServices.getNotebooks();
         dispatch({ type: "emptyNotebooks" });
         array.forEach((notebook) => {
           dispatch({ type: "addNotebook", payload: notebook });
         });
-      } catch (error) {}
+      } catch (error) {
+        history.push("/networkDown");
+      }
     }
     body();
   }, []);

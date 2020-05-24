@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import Login from "./Login";
 import Navbar from "./NavBar";
 import NoteBooks from "./NoteBooks";
+import notFound from "./NotFound";
+import NetworkDown from "./NetworkDown";
 import * as userService from "../Services/userServices";
 import Notes from "./Notes";
 import Note from "./Note";
@@ -35,6 +37,8 @@ const RootApp = () => {
             )
           }
         ></Route>
+        <Route path="/notFound" component={notFound} />
+        <Route path="/NetworkDown" component={NetworkDown} />
         <Route path="/notes/:id" render={(props) => <Notes {...props} />} />
         <Route path="/note/:id" render={(props) => <Note {...props} />} />
       </div>

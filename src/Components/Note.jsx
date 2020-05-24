@@ -6,7 +6,6 @@ import { useEffect } from "react";
 
 const Note = ({ props, history, match, location }) => {
   const { notebookId } = queryString.parse(location.search);
-
   const dispatch = useDispatch();
   const editable = true;
   const [currentNote, changeNote] = useState(
@@ -32,52 +31,63 @@ const Note = ({ props, history, match, location }) => {
   };
 
   return (
-    <div
-      className="container"
-      style={{
-        position: "relative",
-        top: "50px",
-        left: "0px",
-        color: "black !important",
-      }}
-    >
-      <div className="card">
-        <div className="card-header" style={{ color: "black" }}>
-          {editable ? (
-            <textarea
-              type="text"
-              value={currentNote.title}
-              onChange={changeInput}
-              name="title"
-              style={{ height: "100%", width: "100%" }}
-            ></textarea>
-          ) : (
-            currentNote.title
-          )}
-        </div>
-        <div className="card-body" style={{ color: "black" }}>
-          {editable ? (
-            <div>
+    <React.Fragment>
+      <div
+        className="container"
+        style={{
+          position: "relative",
+          top: "50px",
+          left: "0px",
+          color: "black !important",
+        }}
+      >
+        <div className="card">
+          <div className="card-header" style={{ color: "black" }}>
+            {editable ? (
               <textarea
                 type="text"
-                value={currentNote.body}
-                style={{ height: "100%", width: "100%" }}
+                value={currentNote.title}
                 onChange={changeInput}
-                name="body"
+                name="title"
+                style={{ height: "100%", width: "100%" }}
               ></textarea>
-              <button
-                onClick={() => saveNote(currentNote._id)}
-                className="btn btn-primary"
-              >
-                Save Note
-              </button>
-            </div>
-          ) : (
-            <p>{currentNote.body}</p>
-          )}
+            ) : (
+              currentNote.title
+            )}
+          </div>
+          <div className="card-body" style={{ color: "black" }}>
+            {editable ? (
+              <div>
+                <textarea
+                  type="text"
+                  value={currentNote.body}
+                  style={{ height: "100%", width: "100%" }}
+                  onChange={changeInput}
+                  name="body"
+                ></textarea>
+                <button
+                  onClick={() => saveNote(currentNote._id)}
+                  className="btn btn-primary"
+                >
+                  Save Note
+                </button>
+              </div>
+            ) : (
+              <p>{currentNote.body}</p>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+      <button
+        style={{ position: "absolute", top: 75, right: 5 }}
+        onClick={() => {
+          history.goBack();
+        }}
+        className="btn btn-primary"
+      >
+        Go Back
+      </button>
+    </React.Fragment>
   );
 };
 

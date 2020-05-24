@@ -20,7 +20,7 @@ const Navbar = () => {
           }}
         >
           <div className="flex-item">
-            <a className="navbar-brand" href="#">
+            <a className="navbar-brand" href="/">
               <img
                 src={icon}
                 width="55"
@@ -40,6 +40,19 @@ const Navbar = () => {
           {role === "admin" ? (
             <div className="flex-item" style={{ color: "black" }}>
               You are Admin
+            </div>
+          ) : null}
+          {loggedIn ? (
+            <div className="flex-item" style={{ color: "black" }}>
+              <button
+                onClick={() => {
+                  sessionStorage.removeItem("token");
+                  window.location = "/";
+                }}
+                className="btn btn-danger"
+              >
+                Loggout
+              </button>
             </div>
           ) : null}
           ) : null}

@@ -11,14 +11,16 @@ export async function addNotebook(name) {
     const result = await http.post(apiEndpPoint, { name });
     return result;
   } catch (error) {
-    console.log(error);
+    if (error.response) {
+    } else {
+      alert("An unexpected error occured");
+    }
   }
 }
 
 export async function getNotebooks() {
   try {
     const result = await http.get(apiEndpPoint);
-
     return result;
   } catch (error) {}
 }

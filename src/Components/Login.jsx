@@ -1,51 +1,66 @@
 import React, { useState } from "react";
+import ReactDOM from "react-dom";
 import { useSelector, useDispatch } from "react-redux";
-import Joi from "joi-browser";
+import Joi, { read } from "joi-browser";
 import * as userService from "../Services/userServices";
 
 const Login = () => {
-  const [loginMode, changeMode] = useState("login");
+  const [loginMode, changeMode] = useState("register");
   const [user, changeUser] = useState({
     username: "",
     password: "",
-    rememebr: "",
     role: "admin",
   });
 
+  const [errors, changeErrors] = useState({});
+  const [ready, changeReady] = useState({ username: false, password: false });
+
   const schema = {
-    username: Joi.string().required(),
-    password: Joi.string().required(),
-    remember: Joi.optional(),
+    username: Joi.string().required().min(4).max(26),
+    password: Joi.string().required().min(6).max(256),
     role: Joi.string().optional(),
   };
 
   const changeInput = (event) => {
+    const newUser = { ...user, [event.target.name]: event.target.value };
+    validate(newUser, event.target.name);
     changeUser({ ...user, [event.target.name]: event.target.value });
+  };
+
+  const validate = (newUser, property) => {
+    try {
+      const error = Joi.validate(newUser, schema, {
+        abortEarly: false,
+      }).error.details.filter((error) => error.path[0] === property);
+      changeErrors({ ...errors, [property]: error[0].message });
+      changeReady({ ...ready, [property]: false });
+    } catch (error) {
+      changeErrors({ ...errors, [property]: null });
+      changeReady({ ...ready, [property]: true });
+    }
   };
 
   const submitUser = (event) => {
     event.preventDefault();
     if (loginMode === "register") {
-      const submitUser = {
-        username: user.username,
-        password: user.password,
-        role: user.role,
-      };
       try {
-        userService.registerUser(submitUser);
-        userService.loginUser(submitUser);
+        userService.registerUser(user);
+        userService.loginUser(user);
         window.location = "/";
-      } catch (error) {}
+      } catch (error) {
+        if (error && error.reponse) {
+          alert("The username or password are incorrect");
+        }
+      }
     } else {
-      const submitUser = {
-        username: user.username,
-        password: user.password,
-        role: user.role,
-      };
       try {
-        userService.loginUser(submitUser);
+        userService.loginUser(user);
         window.location = "/";
-      } catch (error) {}
+      } catch (error) {
+        if (error && error.reponse) {
+          alert("The username or password are incorrect");
+        }
+      }
     }
   };
 
@@ -77,6 +92,14 @@ const Login = () => {
               onChange={changeInput}
               autoComplete="off"
             ></input>
+            {errors["username"] && (
+              <div
+                disabled={document.activeElement.id !== "username"}
+                className="alert alert-danger"
+              >
+                {errors["username"]}
+              </div>
+            )}
           </div>
           <div className="form-group">
             <label htmlFor="password">Password</label>
@@ -89,6 +112,14 @@ const Login = () => {
               value={user.password}
               onChange={changeInput}
             ></input>
+            {errors["password"] && (
+              <div
+                hidden={document.activeElement.id !== "password"}
+                className="alert alert-danger"
+              >
+                {errors["password"]}
+              </div>
+            )}
           </div>
           {loginMode === "register" ? (
             <div className="form-group mt-2">
@@ -104,7 +135,11 @@ const Login = () => {
               </select>
             </div>
           ) : null}
-          <button className="btn btn-primary" type="submit">
+          <button
+            disabled={!(ready["username"] && ready["password"])}
+            className="btn btn-primary"
+            type="submit"
+          >
             Submit
           </button>
         </form>
