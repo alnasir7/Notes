@@ -46,6 +46,8 @@ const Note = ({ props, history, match, location }) => {
             {editable ? (
               <textarea
                 type="text"
+                placeholder="Enter title here"
+                rows="1"
                 value={currentNote.title}
                 onChange={changeInput}
                 name="title"
@@ -60,6 +62,7 @@ const Note = ({ props, history, match, location }) => {
               <div>
                 <textarea
                   type="text"
+                  rows="5"
                   value={currentNote.body}
                   style={{ height: "100%", width: "100%" }}
                   onChange={changeInput}
@@ -81,7 +84,7 @@ const Note = ({ props, history, match, location }) => {
       <button
         style={{ position: "absolute", top: 75, right: 5 }}
         onClick={() => {
-          history.goBack();
+          history.push(`/notes/${currentNote.notebook || notebookId}`);
         }}
         className="btn btn-primary"
       >
