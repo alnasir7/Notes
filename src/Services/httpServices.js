@@ -8,6 +8,9 @@ axios.interceptors.response.use(null, (error) => {
   if (!expectedError) {
     alert("An unexpected error has occured!");
   }
+  if (expectedError) {
+    console.log(error);
+  }
 
   return Promise.reject(error);
 });

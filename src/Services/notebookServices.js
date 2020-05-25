@@ -26,5 +26,11 @@ export async function getNotebooks() {
 }
 
 export async function removeNotebook(id) {
-  await http.delete(apiEndpPoint + "/" + id);
+  try {
+    await http.delete(apiEndpPoint + "/" + id);
+  } catch (error) {
+    alert(
+      "You don't have Permission for this action, please sign in with the correct credentials"
+    );
+  }
 }

@@ -6,10 +6,12 @@ import jwt_decode from "jwt-decode";
 export async function loginUser(user) {
   const apiPoint = config.apiEndPoint + "/logins";
   try {
-    const headers = await http.post(apiPoint, user);
-    const token = headers.headers["x-jwt"];
+    const result = await http.post(apiPoint, user);
+    const token = result.headers["x-jwt"];
     sessionStorage.setItem("token", token);
-  } catch (error) {}
+  } catch (error) {
+    alert("Username or Password Incorrect");
+  }
 }
 
 export async function registerUser(user) {
@@ -17,7 +19,9 @@ export async function registerUser(user) {
   const result = {};
   try {
     result = await http.post(apiPoint, user);
-  } catch (error) {}
+  } catch (error) {
+    alert("Username or Password Incorrect");
+  }
 }
 
 export function getUser() {

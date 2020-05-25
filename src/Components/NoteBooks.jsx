@@ -41,8 +41,14 @@ const NoteBooks = ({ history }) => {
   };
 
   const removeNotebook = (id) => {
-    dispatch({ type: "removeNotebook", payload: id });
-    notebookServices.removeNotebook(id);
+    const completed = false;
+    try {
+      notebookServices.removeNotebook(id);
+      completed = true;
+    } catch (error) {}
+    if (completed) {
+      dispatch({ type: "removeNotebook", payload: id });
+    }
   };
 
   return (

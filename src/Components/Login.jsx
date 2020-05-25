@@ -47,20 +47,12 @@ const Login = () => {
         userService.registerUser(user);
         userService.loginUser(user);
         window.location = "/";
-      } catch (error) {
-        if (error && error.reponse) {
-          alert("The username or password are incorrect");
-        }
-      }
+      } catch (error) {}
     } else {
       try {
         userService.loginUser(user);
         window.location = "/";
-      } catch (error) {
-        if (error && error.reponse) {
-          alert("The username or password are incorrect");
-        }
-      }
+      } catch (error) {}
     }
   };
 
