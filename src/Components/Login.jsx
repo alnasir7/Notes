@@ -40,19 +40,41 @@ const Login = () => {
     }
   };
 
-  const submitUser = (event) => {
+  const submitUser = async (event) => {
     event.preventDefault();
     if (loginMode === "register") {
       try {
-        userService.registerUser(user);
-        userService.loginUser(user);
+        await userService.registerUser(user);
+        await userService.loginUser(user);
         window.location = "/";
-      } catch (error) {}
+      } catch (error) {
+        if (error && error.response) {
+          if (error.response.status === 400)
+            changeErrors({
+              ...errors,
+              username: "Invalid Username or Passowrd",
+            });
+          else {
+            alert(error.response.data);
+          }
+        }
+      }
     } else {
       try {
-        userService.loginUser(user);
+        await userService.loginUser(user);
         window.location = "/";
-      } catch (error) {}
+      } catch (error) {
+        if (error && error.response) {
+          if (error.response.status === 400)
+            changeErrors({
+              ...errors,
+              username: "Invalid Username or Passowrd",
+            });
+          else {
+            alert(error.response.data);
+          }
+        }
+      }
     }
   };
 

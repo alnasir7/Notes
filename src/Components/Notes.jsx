@@ -23,13 +23,15 @@ const Notes = ({ history, match }) => {
         const data = await noteServices.getNotes(id);
         dispatch({ type: "loadNotes", payload: data });
       } catch (error) {
-        history.push("/networkDown");
+        if (error && error.response) alert(error.response.data);
+        else history.push("/networkDown");
       }
       try {
         const { data: array } = await notebookServices.getNotebooks();
         dispatch({ type: "loadNoatbooks", payload: array });
       } catch (error) {
-        history.push("/networkDown");
+        if (error && error.response) alert(error.response.data);
+        else history.push("/networkDown");
       }
     }
     body();

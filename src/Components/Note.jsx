@@ -18,15 +18,27 @@ const Note = ({ props, history, match, location }) => {
     changeNote({ ...currentNote, [e.target.name]: e.target.value });
   };
 
-  const saveNote = (id) => {
+  const saveNote = async (id) => {
     if (match.params.id !== "new" && editable) {
-      dispatch({ type: "removeNote", payload: id });
-      noteServices.updateNote(currentNote);
-      history.push("/notes/" + currentNote.notebook);
+      try {
+        dispatch({ type: "removeNote", payload: id });
+        await noteServices.updateNote(currentNote);
+        history.push("/notes/" + currentNote.notebook);
+      } catch (error) {
+        if (error && error.response) {
+          console.log(error.response.data);
+        } else history.push("/networkDown");
+      }
     }
     if (match.params.id === "new") {
-      noteServices.addNote(notebookId, currentNote);
-      history.push("/notes/" + notebookId);
+      try {
+        await noteServices.addNote(notebookId, currentNote);
+        history.push("/notes/" + notebookId);
+      } catch (error) {
+        if (error && error.response) {
+          console.log(error.response.data);
+        } else history.push("/networkDown");
+      }
     }
   };
 

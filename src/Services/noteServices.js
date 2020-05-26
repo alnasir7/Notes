@@ -7,7 +7,6 @@ const apiEndPoint = config.apiEndPoint + "/notes";
 
 export async function getNotes(id) {
   const result = await http.get(apiEndPoint + "/" + id);
-
   return result.data;
 }
 

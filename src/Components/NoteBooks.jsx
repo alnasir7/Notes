@@ -17,33 +17,42 @@ const NoteBooks = ({ history }) => {
         const { data: array } = await notebookServices.getNotebooks();
         dispatch({ type: "loadNotebooks", payload: array });
       } catch (error) {
-        history.push("/networkDown");
+        if (error && error.response) {
+          alert(error.response.data);
+        } else history.push("/networkDown");
       }
     }
     body();
   }, []);
 
   const addNotebook = async () => {
-    const { data: result } = await notebookServices.addNotebook(newNotebook);
-    changeNotebook("");
-    changeOpen(false);
-    dispatch({
-      type: "addNotebook",
-      payload: result,
-    });
+    try {
+      changeNotebook("");
+      changeOpen(false);
+      const { data: result } = await notebookServices.addNotebook(newNotebook);
+      dispatch({
+        type: "addNotebook",
+        payload: result,
+      });
+    } catch (error) {
+      console.log(error);
+      if (error && error.response) {
+        alert(error.response.data);
+      } else history.push("/networkDown");
+    }
   };
   const changeInput = (e) => {
     changeNotebook(e.target.value);
   };
 
-  const removeNotebook = (id) => {
-    const completed = false;
+  const removeNotebook = async (id) => {
     try {
       notebookServices.removeNotebook(id);
-      completed = true;
-    } catch (error) {}
-    if (completed) {
       dispatch({ type: "removeNotebook", payload: id });
+    } catch (error) {
+      if (error && error.response) {
+        alert(error.response.data);
+      }
     }
   };
 
