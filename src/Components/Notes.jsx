@@ -20,20 +20,14 @@ const Notes = ({ history, match }) => {
     }
     async function body() {
       try {
-        dispatch({ type: "emptyNotes" });
         const data = await noteServices.getNotes(id);
-        data.forEach((element) => {
-          dispatch({ type: "addNote", payload: element });
-        });
+        dispatch({ type: "loadNotes", payload: data });
       } catch (error) {
         history.push("/networkDown");
       }
       try {
-        dispatch({ type: "emptyNotebooks" });
         const { data: array } = await notebookServices.getNotebooks();
-        array.forEach((notebook) => {
-          dispatch({ type: "addNotebook", payload: notebook });
-        });
+        dispatch({ type: "loadNoatbooks", payload: array });
       } catch (error) {
         history.push("/networkDown");
       }

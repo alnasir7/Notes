@@ -15,10 +15,7 @@ const NoteBooks = ({ history }) => {
     async function body() {
       try {
         const { data: array } = await notebookServices.getNotebooks();
-        dispatch({ type: "emptyNotebooks" });
-        array.forEach((notebook) => {
-          dispatch({ type: "addNotebook", payload: notebook });
-        });
+        dispatch({ type: "loadNotebooks", payload: array });
       } catch (error) {
         history.push("/networkDown");
       }
@@ -28,7 +25,6 @@ const NoteBooks = ({ history }) => {
 
   const addNotebook = async () => {
     const { data: result } = await notebookServices.addNotebook(newNotebook);
-    console.log(result);
     changeNotebook("");
     changeOpen(false);
     dispatch({

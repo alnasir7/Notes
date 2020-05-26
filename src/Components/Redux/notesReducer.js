@@ -1,4 +1,4 @@
-import { addNote, removeNote, emptyNotes } from "./Actions";
+import { addNote, removeNote, emptyNotes, loadNotes } from "./Actions";
 
 const initial_state = [];
 
@@ -12,6 +12,8 @@ export default function (state = initial_state, { type, payload }) {
       });
     case emptyNotes:
       return [];
+    case loadNotes:
+      return payload;
     default:
       return state;
   }

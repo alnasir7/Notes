@@ -6,3 +6,5 @@ export const addNote = "addNote";
 export const removeNote = "removeNote";
 export const emptyNotes = "emptyNotes";
 export const emptyNotebooks = "emptyNotebooks";
+export const loadNotebooks = "loadNotebooks";
+export const loadNotes = "loadNotes";
