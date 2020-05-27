@@ -9,15 +9,14 @@ import { useEffect } from "react";
 const Notes = ({ history, match }) => {
   const dispatch = useDispatch();
   const id = match.params.id;
-  const notebook = useSelector((store) => store.notebookReducer).filter(
-    (notebook) => notebook._id === id
-  )[0];
+  const notebooks = useSelector((store) => store.notebookReducer);
+  const notebook = notebooks.filter((notebook) => notebook._id === id)[0];
   const notes = useSelector((store) => store.notesReducer);
+  if (notebooks.length > 0 && !notebook) {
+    history.push("/notFound");
+  }
 
   useEffect(() => {
-    if (!notebook) {
-      history.push("/notFound");
-    }
     async function body() {
       try {
         const data = await noteServices.getNotes(id);
@@ -28,7 +27,7 @@ const Notes = ({ history, match }) => {
       }
       try {
         const { data: array } = await notebookServices.getNotebooks();
-        dispatch({ type: "loadNoatbooks", payload: array });
+        dispatch({ type: "loadNotebooks", payload: array });
       } catch (error) {
         if (error && error.response) alert(error.response.data);
         else history.push("/networkDown");
@@ -111,7 +110,7 @@ const Notes = ({ history, match }) => {
                         >
                           <div className="flexItem">{note.title}</div>
                           <div className="flex-item clickable">
-                            <Link to={`/note/${note._id}`}>
+                            <Link to={`/note/${note._id}?notebookId=${id}`}>
                               <i className="fas fa-edit"></i>
                             </Link>
                           </div>

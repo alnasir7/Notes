@@ -13,8 +13,7 @@ export async function loginUser(user) {
 
 export async function registerUser(user) {
   const apiPoint = config.apiEndPoint + "/users";
-  const result = {};
-  result = await http.post(apiPoint, user);
+  const result = await http.post(apiPoint, user);
 }
 
 export function getUser() {

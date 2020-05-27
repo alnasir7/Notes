@@ -45,9 +45,12 @@ const Login = () => {
     if (loginMode === "register") {
       try {
         await userService.registerUser(user);
+        console.log("ok reg");
         await userService.loginUser(user);
+        console.log("ok log");
         window.location = "/";
       } catch (error) {
+        console.log(error);
         if (error && error.response) {
           if (error.response.status === 400)
             changeErrors({

@@ -7,6 +7,8 @@ import NoteBooks from "./NoteBooks";
 import notFound from "./NotFound";
 import NetworkDown from "./NetworkDown";
 import * as userService from "../Services/userServices";
+import * as notebookServices from "../Services/notebookServices";
+
 import Notes from "./Notes";
 import Note from "./Note";
 import "bootstrap/dist/css/bootstrap.css";
@@ -16,10 +18,19 @@ const RootApp = () => {
   const currentUser = useSelector((store) => store.loginReducer);
 
   useEffect(() => {
-    const user = userService.getUser();
-    if (user) {
-      dispatch({ type: "addUser", payload: user });
+    async function body() {
+      try {
+        const user = await userService.getUser();
+        if (user) {
+          dispatch({ type: "addUser", payload: user });
+        }
+      } catch (error) {}
+      try {
+        const { data: array } = await notebookServices.getNotebooks();
+        dispatch({ type: "loadNotebooks", payload: array });
+      } catch (error) {}
     }
+    body();
   }, []);
 
   return (

@@ -47,11 +47,15 @@ const NoteBooks = ({ history }) => {
 
   const removeNotebook = async (id) => {
     try {
-      notebookServices.removeNotebook(id);
+      await notebookServices.removeNotebook(id);
       dispatch({ type: "removeNotebook", payload: id });
     } catch (error) {
       if (error && error.response) {
-        alert(error.response.data);
+        if (error.response.status === 403)
+          alert(
+            "You need to be an admin to remove a notebook. Login with and admin account"
+          );
+        else alert(error.response.data);
       }
     }
   };

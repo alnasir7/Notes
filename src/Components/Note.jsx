@@ -8,6 +8,7 @@ const Note = ({ props, history, match, location }) => {
   const { notebookId } = queryString.parse(location.search);
   const dispatch = useDispatch();
   const editable = true;
+
   const [currentNote, changeNote] = useState(
     useSelector((store) => store.notesReducer).filter(
       (note) => note._id == match.params.id
@@ -18,25 +19,39 @@ const Note = ({ props, history, match, location }) => {
     changeNote({ ...currentNote, [e.target.name]: e.target.value });
   };
 
+  useEffect(() => {
+    const body = async () => {
+      try {
+        const data = await noteServices.getNotes(notebookId);
+        dispatch({ type: "loadNotes", payload: data });
+      } catch (error) {
+        if (error && error.response) alert(error.response.data);
+      }
+    };
+    body();
+  }, []);
+
   const saveNote = async (id) => {
     if (match.params.id !== "new" && editable) {
       try {
+        const result = await noteServices.updateNote(currentNote);
         dispatch({ type: "removeNote", payload: id });
-        await noteServices.updateNote(currentNote);
+        dispatch({ type: "addNote", payload: result });
         history.push("/notes/" + currentNote.notebook);
       } catch (error) {
         if (error && error.response) {
-          console.log(error.response.data);
+          alert(error.response.data);
         } else history.push("/networkDown");
       }
     }
     if (match.params.id === "new") {
       try {
-        await noteServices.addNote(notebookId, currentNote);
+        const result = await noteServices.addNote(notebookId, currentNote);
+        // dispatch({ type: "addNote", payload: result });
         history.push("/notes/" + notebookId);
       } catch (error) {
         if (error && error.response) {
-          console.log(error.response.data);
+          alert(error.response.data);
         } else history.push("/networkDown");
       }
     }

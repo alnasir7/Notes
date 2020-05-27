@@ -16,7 +16,6 @@ export async function updateNote({ _id, title, body, notebook }) {
 
 export async function addNote(id, { title, body }) {
   const submitObject = { title, body, notebook: id };
-  console.log(submitObject);
   await http.post(apiEndPoint, { title, body, notebook: id });
 }
 
