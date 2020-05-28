@@ -10,9 +10,9 @@ const Note = ({ props, history, match, location }) => {
   const editable = true;
 
   const [currentNote, changeNote] = useState(
-    useSelector((store) => store.notesReducer).filter(
-      (note) => note._id == match.params.id
-    )[0] || { body: "", title: "", notebook: "" }
+    useSelector((store) => store.notesReducer).filter((note) => {
+      if (note) return note._id == match.params.id;
+    })[0] || { body: "", title: "", notebook: "" }
   );
 
   const changeInput = (e) => {
@@ -35,10 +35,11 @@ const Note = ({ props, history, match, location }) => {
     if (match.params.id !== "new" && editable) {
       try {
         const result = await noteServices.updateNote(currentNote);
-        dispatch({ type: "removeNote", payload: id });
-        dispatch({ type: "addNote", payload: result });
+        console.log(result);
+        dispatch({ type: "udpateNote", payload: result });
         history.push("/notes/" + currentNote.notebook);
       } catch (error) {
+        console.log(error);
         if (error && error.response) {
           alert(error.response.data);
         } else history.push("/networkDown");

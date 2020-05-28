@@ -9,7 +9,7 @@ const Login = () => {
   const [user, changeUser] = useState({
     username: "",
     password: "",
-    role: "admin",
+    role: "user",
   });
 
   const [errors, changeErrors] = useState({});
@@ -25,6 +25,15 @@ const Login = () => {
     const newUser = { ...user, [event.target.name]: event.target.value };
     validate(newUser, event.target.name);
     changeUser({ ...user, [event.target.name]: event.target.value });
+  };
+
+  const handlePageMode = (newMode) => {
+    changeMode(newMode);
+    changeUser({
+      username: "",
+      password: "",
+      role: "user",
+    });
   };
 
   const validate = (newUser, property) => {
@@ -147,8 +156,8 @@ const Login = () => {
                 name="role"
                 onChange={changeInput}
               >
-                <option value="admin">Admin</option>
                 <option value="user">User</option>
+                <option value="admin">Admin</option>
               </select>
             </div>
           ) : null}
@@ -168,14 +177,14 @@ const Login = () => {
             {loginMode === "register" ? (
               <span
                 style={{ cursor: "pointer" }}
-                onClick={() => changeMode("login")}
+                onClick={() => handlePageMode("login")}
               >
                 Already have an account? Login here
               </span>
             ) : (
               <span
                 style={{ cursor: "pointer" }}
-                onClick={() => changeMode("register")}
+                onClick={() => handlePageMode("register")}
               >
                 Don't have an account yet? sign up here
               </span>

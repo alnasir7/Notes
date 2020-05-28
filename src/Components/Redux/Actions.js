@@ -8,3 +8,4 @@ export const emptyNotes = "emptyNotes";
 export const emptyNotebooks = "emptyNotebooks";
 export const loadNotebooks = "loadNotebooks";
 export const loadNotes = "loadNotes";
+export const updateNote = "updateNote";

@@ -1,4 +1,10 @@
-import { addNote, removeNote, emptyNotes, loadNotes } from "./Actions";
+import {
+  addNote,
+  removeNote,
+  emptyNotes,
+  loadNotes,
+  updateNote,
+} from "./Actions";
 
 const initial_state = [];
 
@@ -14,6 +20,12 @@ export default function (state = initial_state, { type, payload }) {
       return [];
     case loadNotes:
       return payload;
+    case updateNote:
+      return [
+        ...state.filter((element) => element._id !== payload._id),
+        payload,
+      ];
+
     default:
       return state;
   }
